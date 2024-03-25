@@ -1,12 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // 'useNavigate' anstelle von 'useHistory' für React Router v6
-
 
 // Funktionale Komponente
 const MathQuestionScreen = () => {
-
-  const navigate = useNavigate(); // Verwendung des 'useNavigate' Hooks
-
   // Inline-Style-Objekte, gleich geblieben wie in deiner Klassenkomponente
    // Inline-Style-Objekte
    const styles = {
@@ -113,6 +108,9 @@ const MathQuestionScreen = () => {
     LösungText: {
       color: '#dc2626', 
     },
+    rights: {
+        color: '#1e40af',
+        },
   };
 
   // Funktionen zum Handhaben der Antworten, nächste Frage, und Lösung anzeigen
@@ -128,7 +126,6 @@ const MathQuestionScreen = () => {
 
   const showSolution = () => {
     console.log("Lösung anzeigen");
-    navigate('/LösungMathe')
     // Logik zum Anzeigen der Lösung hinzufügen
   };
 
@@ -137,7 +134,9 @@ const MathQuestionScreen = () => {
       <div style={styles.question}>Löse folgende Gleichung: x**2=144</div>
       <div style={styles.answers}>
         <button style={styles.button} onClick={() => handleAnswer(15)}>15</button>
-        <button style={styles.button} onClick={() => handleAnswer(12)}>12</button>
+        <button style={styles.button} onClick={() => handleAnswer(12)}>
+            <div style={styles.rights}>12</div>
+        </button>
         <button style={styles.button} onClick={() => handleAnswer(16)}>16</button>
       </div>
       <button style={styles.naechsteFrage} onClick={nextQuestion}>Nächste Frage</button>

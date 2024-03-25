@@ -1,8 +1,51 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // 'useNavigate' anstelle von 'useHistory' für React Router v6
+import { useNavigate } from 'react-router-dom'; 
+import { useEffect } from 'react';
+
 
 const QuizApp = () => {
   const navigate = useNavigate(); // Verwendung des 'useNavigate' Hooks
+
+  useEffect(() => {
+    // Stellen Sie sicher, dass Sie den korrekten Pfad zur Worker-Datei angeben
+    const worker1 = new Worker(`${process.env.PUBLIC_URL}/Webworker/worker1.js`);
+    const worker2 = new Worker(`${process.env.PUBLIC_URL}/Webworker/worker2.js`);
+
+    // Überprüfe, ob eine gespeicherte Antwort vorhanden ist, bevor du den Worker benachrichtigst
+    const cachedWorker1Response = JSON.parse(localStorage.getItem('worker1Response'));
+    if (cachedWorker1Response) {
+      console.log('Cached message from Worker1:', cachedWorker1Response);
+    } else {
+      worker1.postMessage([10, 20]);
+    }
+
+    worker1.onmessage = function(e) {
+      console.log('Message from Worker1:', e.data);
+      // Speichere die Antwort im localStorage
+      localStorage.setItem('worker1Response', e.data.stringify());
+    };
+
+    // Mache dasselbe für worker2
+    const cachedWorker2Response = JSON.parse(localStorage.getItem('worker2Response'));
+
+    if (cachedWorker2Response) {
+      console.log('Cached message from Worker2:', cachedWorker2Response);
+    } else {
+      worker2.postMessage([30, 40]);
+    }
+
+    worker2.onmessage = function(e) {
+      console.log('Message from Worker2:', e.data);
+      // Speichere die Antwort im localStorage
+      localStorage.setItem('worker2Response', e.data.stringify());
+    };
+
+    // Worker beenden, wenn sie nicht mehr benötigt werden
+    return () => {
+      worker1.terminate();
+      worker2.terminate();
+    };
+  }, []);
 
   // Inline-Style-Objekte
   const styles = {
